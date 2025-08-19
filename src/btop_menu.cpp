@@ -517,6 +517,12 @@ namespace Menu {
 				"`make setuid` or running with sudo.",
 				"",
 				"True or False."},
+			{"cpu_ppt",
+				"Sets max CPU ppt.",
+				"",
+				"Default empty string: Use dynamically",
+				"observed max cpu watts.",
+				"Positive integer: Set a static max ppt."},
 		},
 	#ifdef GPU_SUPPORT
 		{

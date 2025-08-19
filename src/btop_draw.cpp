@@ -540,6 +540,12 @@ namespace Cpu {
 		if (force_redraw) redraw = true;
 		bool show_temps = (Config::getB("check_temp") and got_sensors);
 		bool show_watts = (Config::getB("show_cpu_watts") and supports_watts);
+		// Prevents problem with text color starting at red (max pwr)
+		string cpu_ppt = Config::getS("cpu_ppt");
+		if (Config::intValid("cpu_ppt", cpu_ppt)) {
+			int cpu_ppt_val = std::stoi(cpu_ppt);
+			max_observed_pwr = cpu_ppt_val != 0 ? static_cast<float>(cpu_ppt_val) : max_observed_pwr;
+		}
 		auto single_graph = Config::getB("cpu_single_graph");
 		bool hide_cores = show_temps and (cpu_temp_only or not Config::getB("show_coretemp"));
 		const int extra_width = (hide_cores ? max(6, 6 * b_column_size) : 0);

@@ -134,6 +134,8 @@ namespace Config {
 
 		{"show_cpu_watts",		"#* Shows the CPU package current power consumption in watts. Requires running `make setcap` or `make setuid` or running with sudo."},
 
+		{"cpu_ppt",				"#* Set the starting CPU max ppt."},
+
 		{"check_temp", 			"#* Show cpu temperature."},
 
 		{"cpu_sensor", 			"#* Which sensor to use for cpu temperature, use options menu to select from list of available sensors."},
@@ -253,6 +255,7 @@ namespace Config {
 		{"proc_filter", ""},
 		{"proc_command", ""},
 		{"selected_name", ""},
+		{"cpu_ppt", ""},
 	#ifdef GPU_SUPPORT
 		{"custom_gpu_name0", ""},
 		{"custom_gpu_name1", ""},
@@ -515,6 +518,9 @@ namespace Config {
 
 		else if (name == "update_ms" and i_value > ONE_DAY_MILLIS)
 			validError = fmt::format("Config value update_ms set too high (>{}).", ONE_DAY_MILLIS);
+
+		else if (name == "cpu_ppt" and i_value < 0)
+			validError = "Config value update_ms set too low (<0).";
 
 		else
 			return true;
