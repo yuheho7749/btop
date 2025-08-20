@@ -190,6 +190,7 @@ namespace Gpu {
 		#define RSMI_MEM_TYPE_VRAM            0
 		#define RSMI_TEMP_CURRENT             0
 		#define RSMI_TEMP_TYPE_EDGE           0
+		#define RSMI_TEMP_TYPE_JUNCTION       1
 		#define RSMI_CLK_TYPE_MEM             4
 		#define RSMI_CLK_TYPE_SYS             0
 		#define RSMI_TEMP_MAX                 1
@@ -1497,6 +1498,7 @@ namespace Gpu {
 		bool collect(gpu_info* gpus_slice) { // raw pointer to vector data, size == device_count, offset by Nvml::device_count elements
 			if (!initialized) return false;
 			rsmi_status_t result;
+			bool gpu_use_junction_temp = Config::getB("gpu_use_junction_temp");
 
 			for (uint32_t i = 0; i < device_count; ++i) {
 				if constexpr(is_init) {
@@ -1519,7 +1521,10 @@ namespace Gpu {
 
 					//? Get temp_max
 					int64_t temp_max;
-    				result = rsmi_dev_temp_metric_get(i, RSMI_TEMP_TYPE_EDGE, RSMI_TEMP_MAX, &temp_max);
+					if (gpu_use_junction_temp)
+						result = rsmi_dev_temp_metric_get(i, RSMI_TEMP_TYPE_JUNCTION, RSMI_TEMP_MAX, &temp_max);
+					else
+						result = rsmi_dev_temp_metric_get(i, RSMI_TEMP_TYPE_EDGE, RSMI_TEMP_MAX, &temp_max);
         			if (result != RSMI_STATUS_SUCCESS)
     					Logger::warning("ROCm SMI: Failed to get maximum GPU temperature, defaulting to 110°C");
     				else gpus_slice[i].temp_max = (long long)temp_max;
@@ -1629,7 +1634,10 @@ namespace Gpu {
 				if (gpus_slice[i].supported_functions.temp_info) {
     				if (Config::getB("check_temp") or is_init) {
 						int64_t temp;
-    					result = rsmi_dev_temp_metric_get(i, RSMI_TEMP_TYPE_EDGE, RSMI_TEMP_CURRENT, &temp);
+						if (gpu_use_junction_temp)
+							result = rsmi_dev_temp_metric_get(i, RSMI_TEMP_TYPE_JUNCTION, RSMI_TEMP_CURRENT, &temp);
+						else
+							result = rsmi_dev_temp_metric_get(i, RSMI_TEMP_TYPE_EDGE, RSMI_TEMP_CURRENT, &temp);
         				if (result != RSMI_STATUS_SUCCESS) {
     						Logger::warning("ROCm SMI: Failed to get GPU temperature");
 							if constexpr(is_init) gpus_slice[i].supported_functions.temp_info = false;
