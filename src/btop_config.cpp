@@ -241,7 +241,9 @@ namespace Config {
 		{"rsmi_measure_pcie_speeds",
 								"#* Measure PCIe throughput on AMD cards, may impact performance on certain cards."},
 		{"gpu_mirror_graph",	"#* Horizontally mirror the GPU graph."},
-		{"shown_gpus",			"#* Set which GPU vendors to show. Available values are \"nvidia amd intel apple\""},
+		{"shown_gpus",			"#* Set which GPU vendors to show. Available values are \"nvidia amd intel\""},
+		{"gpu_use_junction_temp",
+								"#* Show gpu junction temp override."},
 		{"custom_gpu_name0",	"#* Custom gpu0 model name, empty string to disable."},
 		{"custom_gpu_name1",	"#* Custom gpu1 model name, empty string to disable."},
 		{"custom_gpu_name2",	"#* Custom gpu2 model name, empty string to disable."},
@@ -356,6 +358,7 @@ namespace Config {
 		{"nvml_measure_pcie_speeds", true},
 		{"rsmi_measure_pcie_speeds", true},
 		{"gpu_mirror_graph", true},
+		{"gpu_use_junction_temp", false},
 	#endif
 		{"terminal_sync", true},
 		{"save_config_on_exit", true},
